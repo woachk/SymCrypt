@@ -80,3 +80,7 @@ scbuild.log
 /lib/Debug/x64
 /unittest/exe_Win8_1nLater/Debug/x64
 /unittest/lib/Debug/x64
+/lib/Debug/x86/symcrypt.tlog
+/lib/Debug/x86
+/unittest/exe_Win8_1nLater/Debug/x86
+/unittest/lib/Debug/x86
