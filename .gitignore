@@ -77,3 +77,6 @@ scbuild.log
 /unittest/exe_Win8_1nLater/symcryptunittest_Win8_1nLater.vcxproj.user
 /lib/symcrypt.vcxproj.user
 /lib/symcrypt.v11.suo
+/lib/Debug/x64
+/unittest/exe_Win8_1nLater/Debug/x64
+/unittest/lib/Debug/x64

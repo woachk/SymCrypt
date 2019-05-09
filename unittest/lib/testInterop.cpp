@@ -7,6 +7,7 @@
 
 IMPLEMENTATION_DATA g_Implementations[TEST_INTEROP_NUMOF_IMPS] = {
     { ImpSc::name,          IMPSC_INDEX         },
+	{ ImpCng::name,         IMPCNG_INDEX},
 };
 
 // Functions needed for MsBignum hashes (see pfnHash type)

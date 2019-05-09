@@ -19,7 +19,7 @@ typedef struct _IMPLEMENTATION_DATA {
     UINT32  index;
 } IMPLEMENTATION_DATA;
 
-#define TEST_INTEROP_NUMOF_IMPS         (1)
+#define TEST_INTEROP_NUMOF_IMPS         (2)
 extern IMPLEMENTATION_DATA g_Implementations[TEST_INTEROP_NUMOF_IMPS];
 
 
