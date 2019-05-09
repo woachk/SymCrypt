@@ -39,8 +39,8 @@ developertest()
 // Special extern declarations to allow us to disable AES-NI on the RSA32 library
 //
 extern "C" {
-extern BYTE AesUseXmm;
-extern BOOL AesDetectXmmDone;
+BYTE AesUseXmm = 0;
+BOOL AesDetectXmmDone = false;
 }
 
 char * AlgMd2::name = "Md2";
@@ -852,7 +852,7 @@ void getPlatformInformation()
 
     versionInfo.dwOSVersionInfoSize = sizeof( versionInfo );
 
-    CHECK( GetVersionEx( &versionInfo ), "Failed to get OS version info" );
+	CHECK( GetVersionEx( &versionInfo ), "Failed to get OS version info" );
 
     g_osVersion = (versionInfo.dwMajorVersion << 8) + (versionInfo.dwMinorVersion & 0xff);
 }
@@ -1410,7 +1410,7 @@ runFunctionalTests()
 
     testUtil();
 
-    testHashAlgorithms();
+	testHashAlgorithms();
 
     testBlockCipherAlgorithms();
 
@@ -1428,7 +1428,7 @@ runFunctionalTests()
 
     testTlsCbcHmacAlgorithms();
 
-    testArithmetic();
+	testArithmetic();
 
     testScsTable();
 

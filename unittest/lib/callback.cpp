@@ -5,7 +5,7 @@
 //
 
 #include "precomp.h"
-#include "msbignum_implementations.h"
+
 
 //
 // Format of checked allocation:
@@ -151,105 +151,14 @@ SymCryptCallbackRandom(
 //
 // Callback functions for MsBignum
 //
-__success(return != NULL)
-__out_bcount_part_opt(cb, 0)
-void* WINAPI mp_alloc_temp (
-  __in               DWORDREGC cb,
-  __in_opt           LPCSTR    pszSource_info,
-  __inout_ecount(1)  bigctx_t  *pCtx)
-{
-    PBYTE p;
 
-    UNREFERENCED_PARAMETER(pszSource_info);
 
-    CHECK( SYMCRYPT_ASYM_ALIGN_VALUE >= sizeof(DWORDREG), "Too small ASYM_ALIGN_VALUE for bignum alloc" );
-
-    p = (PBYTE) AllocWithChecksMsBignum( cb + SYMCRYPT_ASYM_ALIGN_VALUE );
-
-    if (NULL == p)
-    {
-        SetMpErrno_clue(MP_ERRNO_NO_MEMORY, "mp_alloc_temp", pCtx);
-    }
-
-    *((DWORDREG *) p) = cb + SYMCRYPT_ASYM_ALIGN_VALUE;
-
-    return (p + SYMCRYPT_ASYM_ALIGN_VALUE);
-}
-
-void WINAPI mp_free_temp(
-  __in               void     *pVoid,
-  __in_opt           LPCSTR    pszSource_info,
-  __inout_ecount(1)  bigctx_t  *pCtx)
-{
-    PBYTE p = (PBYTE) pVoid;
-
-    UNREFERENCED_PARAMETER(pszSource_info);
-
-    UNREFERENCED_PARAMETER(pCtx);
-
-    p -= SYMCRYPT_ASYM_ALIGN_VALUE;
-
-    SymCryptWipe( p, *((DWORDREG *)p) );
-
-    FreeWithChecksMsBignum(p);
-}
-
-void SetMpErrno(__in mp_errno_tc code, PBIGCTX_ARG)
-{
-    if (NULL != pbigctx)
-    {
-        pbigctx->latest_errno = code;
-    }
-}
-
-void SetMpErrno_clue1(__in mp_errno_tc code, __in_opt const char *hint, PBIGCTX_ARG)
-{
-    UNREFERENCED_PARAMETER(hint);
-
-    SetMpErrno(code, PBIGCTX_PASS);
-}
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 
-BOOL_SUCCESS WINAPI random_bytes(
-  __out_ecount(nbyte)  BYTE   *barray,
-  __in       const     size_t  nbyte,
-  PBIGCTX_ARG)
-{
-    NTSTATUS status;
-    BOOL     fRet = FALSE;
-
-    CHECK( nbyte < 0xffffffff, "Random buffer too large" );
-
-    status = BCryptGenRandom( BCRYPT_RNG_ALG_HANDLE, barray, (UINT32) nbyte, 0 );
-
-    if( pbigctx == NULL )
-    {
-        fRet = FALSE;
-        goto cleanup;
-    }
-
-    if (!NT_SUCCESS(status))
-    {
-        if (STATUS_NO_MEMORY == status)
-        {
-            pbigctx->latest_errno = MP_ERRNO_NO_MEMORY;
-        }
-        else
-        {
-            pbigctx->latest_errno = MP_ERRNO_INTERNAL_ERROR;
-        }
-        goto cleanup;
-    }
-
-    fRet = TRUE;
-
-cleanup:
-    return fRet;
-}
 
 #if defined(__cplusplus)
 }

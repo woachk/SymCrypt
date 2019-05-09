@@ -6,7 +6,7 @@
 //
 
 #include "precomp.h"
-#include "rsa32_implementations.h"
+ 
 #include "capi_implementations.h"
 #include "cng_implementations.h"
 #include "sc_implementations.h"
@@ -17,8 +17,6 @@ SYMCRYPT_ENVIRONMENT_WINDOWS_USERMODE_WIN8_1_N_LATER;
 char * g_implementationNames[] = 
 {
     ImpSc::name,
-    ImpRsa32::name,
-    ImpRsa32b::name,
     ImpCapi::name,
     ImpCng::name,
     ImpRef::name,
@@ -39,7 +37,6 @@ main( int argc, _In_reads_( argc ) char * argv[] )
     if (!g_sgx)
     {
         addCapiAlgs();
-        addRsa32Algs();
     }
     addCngAlgs();
     addSymCryptAlgs();

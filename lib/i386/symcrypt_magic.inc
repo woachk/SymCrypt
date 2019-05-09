@@ -9,10 +9,7 @@
 
 SYMCRYPT_MAGIC_FIELD    MACRO
 
-        if      DBG
-        align   4
-        magic   dd      ?
-        endif
+
         
                         ENDM
 
@@ -21,15 +18,7 @@ SYMCRYPT_MAGIC_CONSTANT EQU     ('S1mv' + SYMCRYPT_CODE_VERSION)
 
 SYMCRYPT_CHECK_MAGIC    MACRO   ptr, struct_name
 
-        if      DBG
-
-        lea     eax, [ptr + SYMCRYPT_MAGIC_CONSTANT]
-        cmp     eax, [ptr + struct_name.magic]
-        jz      @F
-        mov     ecx, 'magc'
-        call    @SymCryptFatal@4
-@@:
-        endif
+       
 
         ENDM
 

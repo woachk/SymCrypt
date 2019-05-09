@@ -70,3 +70,10 @@ validate-pushrelease*.log
 
 release/
 scbuild.log
+/unittest/exe_Win8_1nLater/VistaDebug/x86
+/unittest/lib/VistaDebug/x86
+/lib/VistaDebug/x86
+/unittest/lib/symcryptunittest_lib.vcxproj.user
+/unittest/exe_Win8_1nLater/symcryptunittest_Win8_1nLater.vcxproj.user
+/lib/symcrypt.vcxproj.user
+/lib/symcrypt.v11.suo

@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TARGETNAME Condition="'$(OVERRIDE_TARGETNAME)'!='true'">symcrypt</TARGETNAME>
+    <TARGETTYPE Condition="'$(OVERRIDE_TARGETTYPE)'!='true'">LIBRARY</TARGETTYPE>
+    <KM_LIBRARY Condition="'$(OVERRIDE_KM_LIBRARY)'!='true'">1</KM_LIBRARY>
+    <GUARD Condition="'$(OVERRIDE_GUARD)'!='true'">1</GUARD>
+    <ENABLE_ASM_RETPOLINE Condition="'$(OVERRIDE_ENABLE_ASM_RETPOLINE)'!='true'">1</ENABLE_ASM_RETPOLINE>
+    <ENABLE_RETPOLINE_LINKER_WARNING Condition="'$(OVERRIDE_ENABLE_RETPOLINE_LINKER_WARNING)'!='true'">1</ENABLE_RETPOLINE_LINKER_WARNING>
+    <ASM_DEFINES Condition="'$(OVERRIDE_ASM_DEFINES)'!='true'">$(ASM_DEFINES) /Gy</ASM_DEFINES>
+    <INCLUDES Condition="'$(OVERRIDE_INCLUDES)'!='true'">..\inc;      $(DS_INC_PATH)\crypto;      $(IFSKIT_INC_PATH);      $(MINWIN_INTERNAL_PRIV_SDK_INC_PATH_L)\boot;</INCLUDES>
+    <SOURCES Condition="'$(OVERRIDE_SOURCES)'!='true'">blockciphermodes.c      hash.c      parhash.c      ccm.c      ghash.c      gcm.c      aes-default.c      aes-default-bc.c      aes-key.c      aes-c.c      aes-asm.c      aes-xmm.c      aes-neon.c      aes-selftest.c      aesTables.c      aescmac.c      xtsaes.c      3des.c      desTables.c      desx.c      rc2.c      rc4.c      sha1.c      sha256.c      sha512.c      md5.c      md4.c      md2.c      hmacmd5.c      hmacsha1.c      hmacsha256.c      hmacsha384.c      hmacsha512.c      tlsCbcVerify.c      aesCtrDrbg.c      libmain.c      equal.c      env_windowsUserModeWin7.c      env_windowsUserModeWin8_1.c env_windowsKernelModeWin7.c env_windowsKernelModeWin8_1.c   env_generic.c      env_windowsKernelDebugger.c      env_win10Sgx.c      fatalIntercept.c      selftest.c      rdrand.c      rdseed.c      sha256Par.c      sha512Par.c      marvin32.c      cpuid.c      cpuid_um.c      cpuid_notry.c      pbkdf2.c      pbkdf2_hmacsha1.c      pbkdf2_hmacsha256.c      sp800_108.c      sp800_108_hmacsha1.c      sp800_108_hmacsha256.c      tlsprf.c      tlsprf_selftest.c      hkdf.c      hkdf_selftest.c      chacha20.c      poly1305.c       a_dispatch.c      fdef_general.c      fdef_int.c      fdef_mod.c      fdef369_mod.c      ecpoint.c      ecurve.c      eckey.c      ec_dispatch.c      ec_short_weierstrass.c      ec_internal_curves.c      ec_dsa.c      ec_dh.c      ec_montgomery.c      ec_twisted_edwards.c      ec_mul.c      ScsTable.c      primes.c      modexp.c      gen_int.c      crt.c      rsakey.c      rsa_enc.c      rsa_padding.c      dlgroup.c      dlkey.c      dsa.c      dh.c      recoding.c      IEEE802_11SaeCustom.c</SOURCES>
+    <AMD64_SOURCES Condition="'$(OVERRIDE_AMD64_SOURCES)'!='true'">wipe.asm      aesasm.asm      fdef_asm.asm      fdef369_asm.asm      fdef_mulx.asm</AMD64_SOURCES>
+    <I386_SOURCES Condition="'$(OVERRIDE_I386_SOURCES)'!='true'">i386\aesasm.asm      i386\wipe.asm      i386\fdef_asm.asm</I386_SOURCES>
+    <ARM_SOURCES Condition="'$(OVERRIDE_ARM_SOURCES)'!='true'">arm\fdef_asm.asm      arm\wipe.asm      arm\aesasm.asm</ARM_SOURCES>
+    <ARM64_SOURCES Condition="'$(OVERRIDE_ARM64_SOURCES)'!='true'">arm64\fdef_asm.asm      arm64\fdef369_asm.asm      arm64\wipe.asm</ARM64_SOURCES>
+    <BUFFER_OVERFLOW_CHECKS Condition="'$(OVERRIDE_BUFFER_OVERFLOW_CHECKS)'!='true'">1</BUFFER_OVERFLOW_CHECKS>
+    <MSC_WARNING_LEVEL>/WD4296 /WD4456 /W4 /WX </MSC_WARNING_LEVEL>
+    <ENABLE_ISO_VOLATILE_WARNING Condition="'$(OVERRIDE_ENABLE_ISO_VOLATILE_WARNING)'!='true'">1</ENABLE_ISO_VOLATILE_WARNING>
+  </PropertyGroup>
+</Project>

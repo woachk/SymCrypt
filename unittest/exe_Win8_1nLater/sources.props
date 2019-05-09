@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TARGETNAME Condition="'$(OVERRIDE_TARGETNAME)'!='true'">symcryptunittest_Win8_1nLater</TARGETNAME>
+    <C_DEFINES Condition="'$(OVERRIDE_C_DEFINES)'!='true'">$(C_DEFINES) -DTESTDRIVER_NAME=\"SymCryptDriver_win7nlater.sys\"</C_DEFINES>
+    <ImportFilePath_0A9778FB316B416EB076F79DAF1F37EC Condition="'$(OVERRIDE_ImportFilePath_0A9778FB316B416EB076F79DAF1F37EC)'!='true'">..\sources_exe.inc.props</ImportFilePath_0A9778FB316B416EB076F79DAF1F37EC>
+    <ImportFilePath_0A9778FB316B416EB076F79DAF1F37EC Condition="(!$([System.IO.Path]::IsPathRooted('..\sources_exe.inc.props'))) And ('$(OVERRIDE_ImportFilePath_0A9778FB316B416EB076F79DAF1F37EC)'!='true')">$([System.IO.Path]::Combine($(MSBuildProjectDirectory),'..\sources_exe.inc.props'))</ImportFilePath_0A9778FB316B416EB076F79DAF1F37EC>
+    <AlternateImportFilePath_99B8631DC98545DEB9C8EF34F0D92C51 Condition="'$(OVERRIDE_AlternateImportFilePath_99B8631DC98545DEB9C8EF34F0D92C51)'!='true'">$([System.IO.Path]::Combine($(MSBuildThisFileDirectory),'..\sources_exe.inc.props'))</AlternateImportFilePath_99B8631DC98545DEB9C8EF34F0D92C51>
+  </PropertyGroup>
+  <Import Project="$(ImportFilePath_0A9778FB316B416EB076F79DAF1F37EC)" Condition="Exists($(ImportFilePath_0A9778FB316B416EB076F79DAF1F37EC))" />
+  <Import Project="$(AlternateImportFilePath_99B8631DC98545DEB9C8EF34F0D92C51)" Condition="!Exists($(ImportFilePath_0A9778FB316B416EB076F79DAF1F37EC))" />
+  <PropertyGroup>
+    <_NT_TARGET_VERSION Condition="'$(OVERRIDE__NT_TARGET_VERSION)'!='true'">$(_NT_TARGET_VERSION_WINBLUE)</_NT_TARGET_VERSION>
+  </PropertyGroup>
+</Project>

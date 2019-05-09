@@ -1,0 +1,78 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.352
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "symcrypt", "..\lib\symcrypt.vcxproj", "{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "symcryptunittest_Win8_1nLater", "..\unittest\exe_Win8_1nLater\symcryptunittest_Win8_1nLater.vcxproj", "{4BD88CEA-925B-426F-B711-2CA26AFE3186}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C} = {6C3F327B-677A-43E3-A71A-1468BCFD6E3C}
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B} = {5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "symcryptunittest_lib", "..\unittest\lib\symcryptunittest_lib.vcxproj", "{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B} = {5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Vista Debug|i386 = Vista Debug|i386
+		Vista Release|i386 = Vista Release|i386
+		Win7 Debug|i386 = Win7 Debug|i386
+		Win7 Release|i386 = Win7 Release|i386
+		Win8 Debug|i386 = Win8 Debug|i386
+		Win8 Release|i386 = Win8 Release|i386
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Vista Debug|i386.ActiveCfg = Vista Debug|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Vista Debug|i386.Build.0 = Vista Debug|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Vista Debug|i386.Deploy.0 = Vista Debug|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Vista Release|i386.ActiveCfg = Vista Release|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Vista Release|i386.Build.0 = Vista Release|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Vista Release|i386.Deploy.0 = Vista Release|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win7 Debug|i386.ActiveCfg = Win7 Debug|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win7 Debug|i386.Build.0 = Win7 Debug|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win7 Debug|i386.Deploy.0 = Win7 Debug|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win7 Release|i386.ActiveCfg = Win7 Release|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win7 Release|i386.Build.0 = Win7 Release|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win7 Release|i386.Deploy.0 = Win7 Release|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win8 Debug|i386.ActiveCfg = Win8 Debug|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win8 Debug|i386.Build.0 = Win8 Debug|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win8 Debug|i386.Deploy.0 = Win8 Debug|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win8 Release|i386.ActiveCfg = Win8 Release|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win8 Release|i386.Build.0 = Win8 Release|Win32
+		{5A2AE0D7-828B-47E5-9EA0-6950A6D77B6B}.Win8 Release|i386.Deploy.0 = Win8 Release|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Vista Debug|i386.ActiveCfg = Vista Debug|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Vista Debug|i386.Build.0 = Vista Debug|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Vista Release|i386.ActiveCfg = Vista Release|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Vista Release|i386.Build.0 = Vista Release|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Win7 Debug|i386.ActiveCfg = Win7 Debug|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Win7 Debug|i386.Build.0 = Win7 Debug|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Win7 Release|i386.ActiveCfg = Win7 Release|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Win7 Release|i386.Build.0 = Win7 Release|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Win8 Debug|i386.ActiveCfg = Win8 Debug|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Win8 Debug|i386.Build.0 = Win8 Debug|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Win8 Release|i386.ActiveCfg = Win8 Release|Win32
+		{4BD88CEA-925B-426F-B711-2CA26AFE3186}.Win8 Release|i386.Build.0 = Win8 Release|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Vista Debug|i386.ActiveCfg = Vista Debug|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Vista Debug|i386.Build.0 = Vista Debug|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Vista Release|i386.ActiveCfg = Vista Release|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Vista Release|i386.Build.0 = Vista Release|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Win7 Debug|i386.ActiveCfg = Win7 Debug|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Win7 Debug|i386.Build.0 = Win7 Debug|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Win7 Release|i386.ActiveCfg = Win7 Release|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Win7 Release|i386.Build.0 = Win7 Release|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Win8 Debug|i386.ActiveCfg = Win8 Debug|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Win8 Debug|i386.Build.0 = Win8 Debug|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Win8 Release|i386.ActiveCfg = Win8 Release|Win32
+		{6C3F327B-677A-43E3-A71A-1468BCFD6E3C}.Win8 Release|i386.Build.0 = Win8 Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EF322FA4-9737-418F-A0BE-371BE3DB26E9}
+	EndGlobalSection
+EndGlobal

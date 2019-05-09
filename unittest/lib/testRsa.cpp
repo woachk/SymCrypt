@@ -4,6 +4,7 @@
 
 #include "precomp.h"
 #include "testRsa.h"
+#pragma warning(disable : 4296)
 
 // Table with bitisizes for the mmoduli.
 // The -1 entries will be substituted with random values.
@@ -28,8 +29,7 @@ TEST_RSA_BITSIZEENTRY g_BitSizeEntries[] = {
 
 char * g_ImplNames[] = {
     ImpSc::name,
-    ImpMsBignum::name,
-    ImpCng::name,
+	ImpCng::name,
 };
 
 // List with all the RSA keys
@@ -40,22 +40,17 @@ AlgorithmImplementationVector g_AlgList;
 
 // Translation algorithm from the implementation to its index:
 //      SymCrypt => 0
-//      MsBignum => 1
-//      Cng      => 2
+//      Cng      => 1
 UINT32 ImplToInd( AlgorithmImplementation * pImpl )
 {
     if ( pImpl->m_implementationName == ImpSc::name )
     {
         return 0;
     }
-    else if ( pImpl->m_implementationName == ImpMsBignum::name )
-    {
-        return 1;
-    }
-    else if ( pImpl->m_implementationName == ImpCng::name )
-    {
-        return 2;
-    }
+	else if (pImpl->m_implementationName == ImpCng::name)
+	{
+		return 1;
+	}
     else
     {
         CHECK( FALSE, "TestRsa: Unknown implementation\n");
@@ -158,14 +153,10 @@ testRsaGenerateOneKey( UINT32 iSize, UINT32 iImpl )
     PSYMCRYPT_RSAKEY pkSymCryptKey = NULL;
 
     BOOL success = FALSE;
-    bigctx_t bignumCtx = { 0 };
-    big_prime_search_stat_t stats = { 0 };
-    PRSA_PRIVATE_KEY pkMsBignumKey = NULL;
-
     NTSTATUS ntStatus = STATUS_SUCCESS;
     BCRYPT_ALG_HANDLE hAlg = NULL;
     BCRYPT_KEY_HANDLE hKey = NULL;
-
+	
     switch( iImpl )
     {
         // SymCrypt
@@ -198,52 +189,34 @@ testRsaGenerateOneKey( UINT32 iSize, UINT32 iImpl )
 
             break;
         }
-        // MsBignum
-        case 1:
-            pkMsBignumKey = (PRSA_PRIVATE_KEY) SymCryptCallbackAlloc(sizeof(RSA_PRIVATE_KEY));
-            CHECK( pkMsBignumKey != NULL, "?" );
+		// Cng
+		case 1:
+			ntStatus = BCryptOpenAlgorithmProvider(
+				&hAlg,
+				BCRYPT_RSA_ALGORITHM,
+				MS_PRIMITIVE_PROVIDER,
+				0);
+			CHECK(ntStatus == STATUS_SUCCESS, "?");
+			ntStatus = BCryptGenerateKeyPair(
+				hAlg,
+				&hKey,
+				g_BitSizeEntries[iSize].nBitsOfModulus,
+				0);
+			CHECK(ntStatus == STATUS_SUCCESS, "?");
 
-            success = rsa_construction(
-                            (DWORDREGC)g_BitSizeEntries[iSize].nBitsOfModulus,
-                            pkMsBignumKey,
-                            NULL,
-                            0,
-                            &stats,
-                            &bignumCtx);
-            CHECK( success, "?" );
+			ntStatus = BCryptFinalizeKeyPair(
+				hKey,
+				0);
+			CHECK(ntStatus == STATUS_SUCCESS, "?");
 
-            pRes = (PBYTE) pkMsBignumKey;
+			ntStatus = BCryptCloseAlgorithmProvider(hAlg, 0);
+			CHECK(ntStatus == STATUS_SUCCESS, "?");
 
-            break;
+			pRes = (PBYTE)hKey;
 
-        // Cng
-        case 2:
-            ntStatus = BCryptOpenAlgorithmProvider(
-                            &hAlg,
-                            BCRYPT_RSA_ALGORITHM,
-                            MS_PRIMITIVE_PROVIDER,
-                            0 );
-            CHECK( ntStatus == STATUS_SUCCESS, "?" );
+			break;
 
-            ntStatus = BCryptGenerateKeyPair(
-                            hAlg,
-                            &hKey,
-                            g_BitSizeEntries[iSize].nBitsOfModulus,
-                            0 );
-            CHECK( ntStatus == STATUS_SUCCESS, "?" );
-
-            ntStatus = BCryptFinalizeKeyPair(
-                            hKey,
-                            0 );
-            CHECK( ntStatus == STATUS_SUCCESS, "?" );
-
-            ntStatus = BCryptCloseAlgorithmProvider( hAlg, 0 );
-            CHECK( ntStatus == STATUS_SUCCESS, "?" );
-
-            pRes = (PBYTE) hKey;
-
-            break;
-
+      
         default:
             CHECK3(FALSE, "TestRsa: Unknown implementation %d\n", iImpl);
     }
@@ -303,8 +276,8 @@ testRsaGenerateFunkyKey(
 
     // Calculate scratch space
     cbScratch = 3*cbModulus + cbPrime1 + cbPrime2 +
-                max(SYMCRYPT_SCRATCH_BYTES_FOR_INT_PRIME_GEN(ndModulus),
-                    SYMCRYPT_SCRATCH_BYTES_FOR_INT_MUL(ndModulus));
+		max(SYMCRYPT_SCRATCH_BYTES_FOR_INT_PRIME_GEN(ndModulus),
+			SYMCRYPT_SCRATCH_BYTES_FOR_INT_MUL(ndModulus));
 
     // Allocate
     pbScratch = (PBYTE) SymCryptCallbackAlloc( cbScratch );
@@ -421,9 +394,6 @@ testRsaExportOneKey(
     UINT32 cbPubExp;
 
     BOOL success = FALSE;
-    bigctx_t bignumCtx = { 0 };
-    PRSA_PRIVATE_KEY pkMsBignumKey = NULL;
-
     NTSTATUS ntStatus = STATUS_SUCCESS;
     BCRYPT_KEY_HANDLE hKey = NULL;
     BCRYPT_RSAKEY_BLOB * pRsaKeyBlob = NULL;
@@ -485,78 +455,46 @@ testRsaExportOneKey(
             memcpy( pbPrime2,  &rbKeyBlob[cbTmp], *pcbPrime2  );
 
             break;
+			// Cng
+		case 1:
+			hKey = (BCRYPT_KEY_HANDLE)g_KeyEntries[iSize * TEST_RSA_NUMOF_IMPS + iImpl].pKeys[iImpl];
 
-        // MsBignum
-        case 1:
-            pkMsBignumKey = (PRSA_PRIVATE_KEY) g_KeyEntries[ iSize*TEST_RSA_NUMOF_IMPS + iImpl ].pKeys[iImpl];
+			// Export
+			ntStatus = BCryptExportKey(
+				hKey,
+				NULL,       // Export key
+				BCRYPT_RSAPRIVATE_BLOB,
+				(PUCHAR)rbKeyBlob,
+				sizeof(rbKeyBlob),
+				(ULONG*)& cbKeyBlob,
+				0);
+			CHECK3(ntStatus == STATUS_SUCCESS, "BCryptExportKey failed with 0x%x", ntStatus);
 
-            // Get the sizes
-            success = rsa_export_sizes(
-                            (DWORD *)pcbPubExp,
-                            (DWORD *)pcbModulus,
-                            (DWORD *)pcbPrime1,
-                            (DWORD *)pcbPrime2,
-                            pkMsBignumKey,
-                            &bignumCtx);
-            CHECK( success, "?" );
+			// Get the sizes
+			pRsaKeyBlob = (BCRYPT_RSAKEY_BLOB*)& rbKeyBlob[0];
+			*pcbPubExp = pRsaKeyBlob->cbPublicExp;
+			*pcbModulus = pRsaKeyBlob->cbModulus;
+			*pcbPrime1 = pRsaKeyBlob->cbPrime1;
+			*pcbPrime2 = pRsaKeyBlob->cbPrime2;
+			cbKeyBlob = *pcbPubExp + *pcbModulus + *pcbPrime1 + *pcbPrime2;
 
-            cbKeyBlob = *pcbPubExp + *pcbModulus + *pcbPrime1 + *pcbPrime2;
+			// CHECK( cbModulus <= sizeof( rbModulus ), "?" );
+			// CHECK( cbPubExp <= sizeof( rbPubExp ), "?" );
+			// CHECK( cbPrime1 <= sizeof( rbPrime1 ), "?" );
+			// CHECK( cbPrime2 <= sizeof( rbPrime2 ), "?" );
 
-            // CHECK( cbModulus <= sizeof( rbModulus ), "?" );
-            // CHECK( cbPubExp <= sizeof( rbPubExp ), "?" );
-            // CHECK( cbPrime1 <= sizeof( rbPrime1 ), "?" );
-            // CHECK( cbPrime2 <= sizeof( rbPrime2 ), "?" );
+			// Fill each individual buffer
+			cbTmp = sizeof(BCRYPT_RSAKEY_BLOB);
 
-            // Export
-            success = rsa_export(
-                        pbPubExp, *pcbPubExp,
-                        pbModulus, *pcbModulus,
-                        pbPrime1, *pcbPrime1,
-                        pbPrime2, *pcbPrime2,
-                        pkMsBignumKey,
-                        TRUE,
-                        &bignumCtx );
-            CHECK( success, "?" );
+			memcpy(pbPubExp, &rbKeyBlob[cbTmp], *pcbPubExp); cbTmp += *pcbPubExp;
+			memcpy(pbModulus, &rbKeyBlob[cbTmp], *pcbModulus); cbTmp += *pcbModulus;
+			memcpy(pbPrime1, &rbKeyBlob[cbTmp], *pcbPrime1); cbTmp += *pcbPrime1;
+			memcpy(pbPrime2, &rbKeyBlob[cbTmp], *pcbPrime2);
 
-            break;
+			break;
+       
 
-        // Cng
-        case 2:
-            hKey = (BCRYPT_KEY_HANDLE) g_KeyEntries[ iSize*TEST_RSA_NUMOF_IMPS + iImpl ].pKeys[iImpl];
-
-            // Export
-            ntStatus = BCryptExportKey(
-                        hKey,
-                        NULL,       // Export key
-                        BCRYPT_RSAPRIVATE_BLOB,
-                        (PUCHAR) rbKeyBlob,
-                        sizeof( rbKeyBlob ),
-                        (ULONG*) &cbKeyBlob,
-                        0 );
-            CHECK3( ntStatus == STATUS_SUCCESS, "BCryptExportKey failed with 0x%x", ntStatus );
-
-            // Get the sizes
-            pRsaKeyBlob = (BCRYPT_RSAKEY_BLOB *) &rbKeyBlob[0];
-            *pcbPubExp = pRsaKeyBlob->cbPublicExp;
-            *pcbModulus = pRsaKeyBlob->cbModulus;
-            *pcbPrime1 = pRsaKeyBlob->cbPrime1;
-            *pcbPrime2 = pRsaKeyBlob->cbPrime2;
-            cbKeyBlob = *pcbPubExp + *pcbModulus + *pcbPrime1 + *pcbPrime2;
-
-            // CHECK( cbModulus <= sizeof( rbModulus ), "?" );
-            // CHECK( cbPubExp <= sizeof( rbPubExp ), "?" );
-            // CHECK( cbPrime1 <= sizeof( rbPrime1 ), "?" );
-            // CHECK( cbPrime2 <= sizeof( rbPrime2 ), "?" );
-
-            // Fill each individual buffer
-            cbTmp = sizeof(BCRYPT_RSAKEY_BLOB);
-
-            memcpy( pbPubExp,  &rbKeyBlob[cbTmp], *pcbPubExp  ); cbTmp += *pcbPubExp;            
-            memcpy( pbModulus, &rbKeyBlob[cbTmp], *pcbModulus ); cbTmp += *pcbModulus;
-            memcpy( pbPrime1,  &rbKeyBlob[cbTmp], *pcbPrime1  ); cbTmp += *pcbPrime1;
-            memcpy( pbPrime2,  &rbKeyBlob[cbTmp], *pcbPrime2  );
-
-            break;
+       
 
         default:
             CHECK3(FALSE, "TestRsa: Unknown implementation %d\n", iImpl);
@@ -586,8 +524,6 @@ testRsaImportOneKey(
     SIZE_T pcbPrimes[] = { 0, 0, };
 
     BOOL success = FALSE;
-    bigctx_t bignumCtx = { 0 };
-    PRSA_PRIVATE_KEY pkMsBignumKey = NULL;
 
     NTSTATUS ntStatus = STATUS_SUCCESS;
     BCRYPT_ALG_HANDLE hAlg = NULL;
@@ -637,75 +573,56 @@ testRsaImportOneKey(
             pRes = (PBYTE) pkSymCryptKey;
 
             break;
+			// Cng
+		case 1:
+			ntStatus = BCryptOpenAlgorithmProvider(
+				&hAlg,
+				BCRYPT_RSA_ALGORITHM,
+				MS_PRIMITIVE_PROVIDER,
+				0);
+			CHECK3(ntStatus == STATUS_SUCCESS, "BCryptOpenAlgorithmProvider with 0x%x", ntStatus);
 
-        // MsBignum
-        case 1:
-            // Allocate
-            pkMsBignumKey = (PRSA_PRIVATE_KEY) SymCryptCallbackAlloc(sizeof(RSA_PRIVATE_KEY));
-            CHECK( pkMsBignumKey != NULL, "?" );
+			// Fix BCRYPT_RSAKEY_BLOB
+			pRsaKeyBlob = (BCRYPT_RSAKEY_BLOB*)& rbKeyBlob[0];
+			pRsaKeyBlob->Magic = BCRYPT_RSAPRIVATE_MAGIC;
+			pRsaKeyBlob->BitLength = g_BitSizeEntries[iSize].nBitsOfModulus;
+			pRsaKeyBlob->cbPublicExp = cbPubExp;
+			pRsaKeyBlob->cbModulus = cbModulus;
+			pRsaKeyBlob->cbPrime1 = cbPrime1;
+			pRsaKeyBlob->cbPrime2 = cbPrime2;
 
-            // Import
-            success = rsa_import(
-                        pbPubExp, cbPubExp,
-                        pbModulus, cbModulus,
-                        pbPrime1, cbPrime1,
-                        pbPrime2, cbPrime2,
-                        pkMsBignumKey,
-                        TRUE,
-                        &bignumCtx);
-            CHECK( success, "Bignum failed to import RSA key" );
+			CHECK(sizeof(BCRYPT_RSAKEY_BLOB) + cbPubExp + cbModulus + cbPrime1 + cbPrime2 <= sizeof(rbKeyBlob), "?");
 
-            pRes = (PBYTE) pkMsBignumKey;
+			// Set the values
+			cbTmp = sizeof(BCRYPT_RSAKEY_BLOB);
 
-            break;
+			memcpy(&rbKeyBlob[cbTmp], pbPubExp, cbPubExp); cbTmp += cbPubExp;
+			memcpy(&rbKeyBlob[cbTmp], pbModulus, cbModulus); cbTmp += cbModulus;
+			memcpy(&rbKeyBlob[cbTmp], pbPrime1, cbPrime1); cbTmp += cbPrime1;
+			memcpy(&rbKeyBlob[cbTmp], pbPrime2, cbPrime2); cbTmp += cbPrime2;
 
-        // Cng
-        case 2:
-            ntStatus = BCryptOpenAlgorithmProvider(
-                            &hAlg,
-                            BCRYPT_RSA_ALGORITHM,
-                            MS_PRIMITIVE_PROVIDER,
-                            0 );
-            CHECK3( ntStatus == STATUS_SUCCESS, "BCryptOpenAlgorithmProvider with 0x%x", ntStatus );
+			cbKeyBlob = cbTmp;
 
-            // Fix BCRYPT_RSAKEY_BLOB
-            pRsaKeyBlob = (BCRYPT_RSAKEY_BLOB *) &rbKeyBlob[0];
-            pRsaKeyBlob->Magic = BCRYPT_RSAPRIVATE_MAGIC;
-            pRsaKeyBlob->BitLength = g_BitSizeEntries[iSize].nBitsOfModulus;
-            pRsaKeyBlob->cbPublicExp = cbPubExp;
-            pRsaKeyBlob->cbModulus = cbModulus;
-            pRsaKeyBlob->cbPrime1 = cbPrime1;
-            pRsaKeyBlob->cbPrime2 = cbPrime2;
+			// Import the key
+			ntStatus = BCryptImportKeyPair(
+				hAlg,
+				NULL,       // Import key
+				BCRYPT_RSAPRIVATE_BLOB,
+				&hKey,
+				rbKeyBlob,
+				cbKeyBlob,
+				0);
+			CHECK3(ntStatus == STATUS_SUCCESS, "BCryptImportKeyPair failed with 0x%x", ntStatus);
 
-            CHECK( sizeof(BCRYPT_RSAKEY_BLOB) + cbPubExp + cbModulus + cbPrime1 + cbPrime2 <= sizeof(rbKeyBlob), "?" );
+			ntStatus = BCryptCloseAlgorithmProvider(hAlg, 0);
+			CHECK(ntStatus == STATUS_SUCCESS, "?");
 
-            // Set the values
-            cbTmp = sizeof(BCRYPT_RSAKEY_BLOB);
+			pRes = (PBYTE)hKey;
 
-            memcpy( &rbKeyBlob[cbTmp], pbPubExp,  cbPubExp  ); cbTmp += cbPubExp;
-            memcpy( &rbKeyBlob[cbTmp], pbModulus, cbModulus ); cbTmp += cbModulus;
-            memcpy( &rbKeyBlob[cbTmp], pbPrime1,  cbPrime1  ); cbTmp += cbPrime1;
-            memcpy( &rbKeyBlob[cbTmp], pbPrime2,  cbPrime2  ); cbTmp += cbPrime2;
+			break;
+        
 
-            cbKeyBlob = cbTmp;
-
-            // Import the key
-            ntStatus = BCryptImportKeyPair(
-                            hAlg,
-                            NULL,       // Import key
-                            BCRYPT_RSAPRIVATE_BLOB,
-                            &hKey,
-                            rbKeyBlob,
-                            cbKeyBlob,
-                            0 );
-            CHECK3( ntStatus == STATUS_SUCCESS, "BCryptImportKeyPair failed with 0x%x", ntStatus );
-
-            ntStatus = BCryptCloseAlgorithmProvider( hAlg, 0 );
-            CHECK( ntStatus == STATUS_SUCCESS, "?" );
-
-            pRes = (PBYTE) hKey;
-
-            break;
+      
         default:
             CHECK3(FALSE, "TestRsa: Unknown implementation %d\n", iImpl);
     }
@@ -797,41 +714,26 @@ VOID
 testRsaCleanKeys()
 {
 
-    // MsBignum
-    BOOL success = FALSE;
-    bigctx_t bignumCtx = { 0 };
 
-    for (UINT32 i = 0; i<TEST_RSA_NUMOF_ENTRIES; i++)
-    {
-        // First, check every third line if the Cng key wasn't generated
-        // but was copied from the SymCrypt line. If yes then skip
-        // the freeing.
-        if ( (i%3 == 2) && (g_KeyEntries[i].pKeys[0] == g_KeyEntries[i-2].pKeys[0]) )
-        {
-            continue;
-        }
 
-        if (g_KeyEntries[i].pKeys[0] != NULL)
-        {
-            SymCryptRsakeyFree( (PSYMCRYPT_RSAKEY) g_KeyEntries[i].pKeys[0] );
-        }
+	for (UINT32 i = 0; i < TEST_RSA_NUMOF_ENTRIES; i++)
+	{
+		// First, check every third line if the Cng key wasn't generated
+		// but was copied from the SymCrypt line. If yes then skip
+		// the freeing.
+		if ((i % 3 == 2) && (g_KeyEntries[i].pKeys[0] == g_KeyEntries[i - 2].pKeys[0]))
+		{
+			continue;
+		}
 
-        if (g_KeyEntries[i].pKeys[1] != NULL)
-        {
-            success = rsa_destruction( (RSA_PRIVATE_KEY *)g_KeyEntries[i].pKeys[1], &bignumCtx);
-            CHECK( success, "?" );
+		if (g_KeyEntries[i].pKeys[0] != NULL)
+		{
+			SymCryptRsakeyFree((PSYMCRYPT_RSAKEY)g_KeyEntries[i].pKeys[0]);
+		}
 
-            SymCryptWipe( g_KeyEntries[i].pKeys[1], sizeof(RSA_PRIVATE_KEY) );
-            SymCryptCallbackFree( g_KeyEntries[i].pKeys[1] );
-        }
 
-        if (g_KeyEntries[i].pKeys[2] != NULL)
-        {
-            NTSTATUS ntStatus = STATUS_SUCCESS;
-            ntStatus = BCryptDestroyKey( (BCRYPT_KEY_HANDLE) g_KeyEntries[i].pKeys[2] );
-            CHECK( ntStatus == STATUS_SUCCESS, "?" );
-        }
-    }
+
+	}
 }
 
 VOID
@@ -840,20 +742,20 @@ testRsaPopulateAlgorithms()
     // The order specifies the order of the from implementations
 
     addImplementationToList<FunctionalRsaImp<ImpSc, AlgRsaEncRaw>>(&g_AlgList);
-    addImplementationToList<FunctionalRsaImp<ImpMsBignum, AlgRsaEncRaw>>(&g_AlgList);
-    addImplementationToList<FunctionalRsaImp<ImpCng, AlgRsaEncRaw>>(&g_AlgList);
+	
+
 
     addImplementationToList<FunctionalRsaImp<ImpSc, AlgRsaEncPkcs1>>(&g_AlgList);
-    addImplementationToList<FunctionalRsaImp<ImpCng, AlgRsaEncPkcs1>>(&g_AlgList);
+
 
     addImplementationToList<FunctionalRsaImp<ImpSc, AlgRsaEncOaep>>(&g_AlgList);
-    addImplementationToList<FunctionalRsaImp<ImpCng, AlgRsaEncOaep>>(&g_AlgList);
+
 
     addImplementationToList<FunctionalRsaImp<ImpSc, AlgRsaSignPkcs1>>(&g_AlgList);
-    addImplementationToList<FunctionalRsaImp<ImpCng, AlgRsaSignPkcs1>>(&g_AlgList);
+;
 
     addImplementationToList<FunctionalRsaImp<ImpSc, AlgRsaSignPss>>(&g_AlgList);
-    addImplementationToList<FunctionalRsaImp<ImpCng, AlgRsaSignPss>>(&g_AlgList);
+
 }
 
 VOID testRsaRunAlgs()

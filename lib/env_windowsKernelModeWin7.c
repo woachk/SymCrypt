@@ -18,9 +18,7 @@
 //
 #define _NTSYSTEM_
 
-#include <nt.h>
-#include <ntrtl.h>
-#include <ntosp.h>
+#include <ntddk.h>
 #include <windef.h>
 
 

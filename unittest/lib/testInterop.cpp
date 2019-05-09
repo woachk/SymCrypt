@@ -7,8 +7,6 @@
 
 IMPLEMENTATION_DATA g_Implementations[TEST_INTEROP_NUMOF_IMPS] = {
     { ImpSc::name,          IMPSC_INDEX         },
-    { ImpMsBignum::name,    IMPMSBIGNUM_INDEX   },
-    { ImpCng::name,         IMPCNG_INDEX        },
 };
 
 // Functions needed for MsBignum hashes (see pfnHash type)
@@ -38,17 +36,16 @@ SHA256Hash(
 }
 
 HASHALG_DATA g_HashAlgs[] = {
-    { SymCryptMd5Algorithm ,    "MD5",      BCRYPT_MD5_ALGORITHM,       NULL        },
-    { SymCryptSha1Algorithm,    "SHA1",     BCRYPT_SHA1_ALGORITHM,      SHA1Hash   },
-    { SymCryptSha256Algorithm,  "SHA256",   BCRYPT_SHA256_ALGORITHM,    SHA256Hash },
-    { SymCryptSha384Algorithm,  "SHA384",   BCRYPT_SHA384_ALGORITHM,    NULL },
-    { SymCryptSha512Algorithm,  "SHA512",   BCRYPT_SHA512_ALGORITHM,    NULL },
+	{ SymCryptMd5Algorithm ,    "MD5",      BCRYPT_MD5_ALGORITHM},
+    { SymCryptSha1Algorithm,    "SHA1",     BCRYPT_SHA1_ALGORITHM},
+    { SymCryptSha256Algorithm,  "SHA256",   BCRYPT_SHA256_ALGORITHM},
+    { SymCryptSha384Algorithm,  "SHA384",   BCRYPT_SHA384_ALGORITHM},
+    { SymCryptSha512Algorithm,  "SHA512",   BCRYPT_SHA512_ALGORITHM},
 };
 
 // Translation algorithm from the implementation to its index:
 //      SymCrypt => 0
-//      MsBignum => 1
-//      Cng      => 2
+//      Cng      => 1
 UINT32 testInteropImplToInd( AlgorithmImplementation * pImpl )
 {
     if (pImpl == NULL)
@@ -72,11 +69,9 @@ UINT32 testInteropImplToInd( AlgorithmImplementation * pImpl )
 }
 
 // Hash algorithms translations
-VOID testInteropScToHashContext( PCSYMCRYPT_HASH pHashAlgorithm, PBYTE rgbDigest, hash_function_context* pHashFunCxt)
+VOID testInteropScToHashContext( PCSYMCRYPT_HASH pHashAlgorithm, PBYTE rgbDigest)
 {
-    pHashFunCxt->dwVersion = HASH_FUNCTION_STRUCTURE_VERSION;
-    pHashFunCxt->pvContext = NULL;
-    pHashFunCxt->pdwDigest = (PDWORD)rgbDigest;
+	
 
     if (pHashAlgorithm == NULL)
     {
@@ -88,8 +83,7 @@ VOID testInteropScToHashContext( PCSYMCRYPT_HASH pHashAlgorithm, PBYTE rgbDigest
         {
             if (pHashAlgorithm == g_HashAlgs[i].pHashAlgorithm)
             {
-                pHashFunCxt->pfHash = g_HashAlgs[i].msBignumHashFunc;
-                pHashFunCxt->cbDigest = (DWORD)SymCryptHashResultSize(pHashAlgorithm);
+				CHECK(FALSE, "This path requires msbignum.");
                 return;
             }
         }

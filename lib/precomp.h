@@ -8,7 +8,8 @@
 #error C++
 #endif
 #include <stdlib.h>
-
+#pragma warning (disable: 4296)
+#pragma warning (disable: 4456)
 #if defined(_MSC_VER)
 
     #include <windows.h>

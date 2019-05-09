@@ -1292,17 +1292,14 @@ runProfiling()
     g_perfTestsRunning = FALSE;
 }
 
-#include "bigpriv.h"
-#include "ms_rsa.h"
+
 
 VOID
 runRsaAverageKeyGenPerf()
 {
-    UINT32 bitSizes[] = {512, 3*256, 1024, 3*512, 2048, 3*1024, 4096, 3*2048, 8192, };
-    bigctx_t bignumCtx = { 0 };
+    UINT32 bitSizes[] = {512, 3*256, 1024, 3*512, 2048, 3*1024, 4096, 3*2048, 8192, };  
     SYMCRYPT_RSA_PARAMS scRsaParams = {0};
-    RSA_PRIVATE_KEY bnPrivateKey;
-    big_prime_search_stat_t bnStats = { 0 };
+
 
     iprint( "\n" 
         " Trial division limits: \n" );
@@ -1348,9 +1345,6 @@ runRsaAverageKeyGenPerf()
             UINT64 stop = GET_PERF_CLOCK();
             scTicks = stop - start;
             start = stop;
-
-            rsa_construction( bitSize, &bnPrivateKey, NULL, 0, &bnStats, &bignumCtx );
-            rsa_destruction( &bnPrivateKey, &bignumCtx );
 
             stop = GET_PERF_CLOCK();
             bnTicks = stop - start;

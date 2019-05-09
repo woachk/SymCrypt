@@ -555,14 +555,9 @@ VOID testDlGenerateOneKey( PTEST_DL_KEYENTRY pKeyEntry, UINT32 iImpl )
             algImpTestInteropFillKeyEntryBuffers<ImpSc>((PBYTE)pKeyEntry);
             break;
 
-        // MsBignum
-        case 1:
-            algImpTestInteropGenerateKeyEntry<ImpMsBignum>((PBYTE)pKeyEntry);
-            algImpTestInteropFillKeyEntryBuffers<ImpMsBignum>((PBYTE)pKeyEntry);
-            break;
-
+       
         // Cng
-        case 2:
+        case 1:
             algImpTestInteropGenerateKeyEntry<ImpCng>((PBYTE)pKeyEntry);
             algImpTestInteropFillKeyEntryBuffers<ImpCng>((PBYTE)pKeyEntry);
             break;
@@ -583,13 +578,10 @@ VOID testDlImportOneKey( PTEST_DL_KEYENTRY pKeyEntry, UINT32  iImpl )
             algImpTestInteropImportKeyEntryBuffers<ImpSc>((PBYTE)pKeyEntry);
             break;
 
-        // MsBignum
-        case 1:
-            algImpTestInteropImportKeyEntryBuffers<ImpMsBignum>((PBYTE)pKeyEntry);
-            break;
+       
 
         // Cng
-        case 2:
+        case 1:
             algImpTestInteropImportKeyEntryBuffers<ImpCng>((PBYTE)pKeyEntry);
             break;
 
@@ -630,7 +622,6 @@ VOID testDlPopulateAlgorithms()
     // The order specifies the order of the from implementations
 
     addImplementationToList<FunctionalInteropImp<ImpSc, AlgDsaSign>>(&g_DlAlgList);
-    addImplementationToList<FunctionalInteropImp<ImpMsBignum, AlgDsaSign>>(&g_DlAlgList);
     addImplementationToList<FunctionalInteropImp<ImpCng, AlgDsaSign>>(&g_DlAlgList);
 
     addImplementationToList<FunctionalInteropImp<ImpSc, AlgDh>>(&g_DlAlgList);
@@ -732,7 +723,6 @@ VOID testDlCleanKeys()
     for (UINT32 i = 0; i<TEST_DL_NUMOF_ENTRIES; i++)
     {
         algImpTestInteropCleanKeyEntry<ImpSc>((PBYTE)&g_DlKeyEntries[i]);
-        algImpTestInteropCleanKeyEntry<ImpMsBignum>((PBYTE)&g_DlKeyEntries[i]);
         algImpTestInteropCleanKeyEntry<ImpCng>((PBYTE)&g_DlKeyEntries[i]);
     }
 }
@@ -772,7 +762,6 @@ VOID testDl()
     nAllocs = g_nAllocs;
 
     CHECK( g_nOutstandingCheckedAllocs == 0, "Memory leak" );
-    CHECK( g_nOutstandingCheckedAllocsMsBignum == 0, "Memory leak MsBignum" );
 
     testDlSimple();
 
@@ -785,7 +774,7 @@ VOID testDl()
     testDlCleanKeys();
 
     CHECK3( g_nOutstandingCheckedAllocs == 0, "Memory leak, %d outstanding", (unsigned) g_nOutstandingCheckedAllocs );
-    CHECK3( g_nOutstandingCheckedAllocsMsBignum == 0, "Memory leak MsBignum, %d outstanding", (unsigned) g_nOutstandingCheckedAllocsMsBignum );
+   
 
     testDlPrintResults();
 

@@ -6,25 +6,20 @@
 
 #include "sc_implementations.h"
 
-#include "msbignum_implementations.h"
-#include "bigpriv.h"
-#include "ms_rsa.h"
 
-#include "cryptdsa.h"
-#include "cryptdh.h"
 
 #include "cng_implementations.h"
 
 #define IMPSC_INDEX             (0)
-#define IMPMSBIGNUM_INDEX       (1)
-#define IMPCNG_INDEX            (2)
+//#define IMPMSBIGNUM_INDEX       (2)
+#define IMPCNG_INDEX            (1)
 
 typedef struct _IMPLEMENTATION_DATA {
     char *  name;
     UINT32  index;
 } IMPLEMENTATION_DATA;
 
-#define TEST_INTEROP_NUMOF_IMPS         (3)
+#define TEST_INTEROP_NUMOF_IMPS         (1)
 extern IMPLEMENTATION_DATA g_Implementations[TEST_INTEROP_NUMOF_IMPS];
 
 
@@ -32,7 +27,6 @@ typedef struct _HASHALG_DATA {
     PCSYMCRYPT_HASH pHashAlgorithm;
     LPCSTR          shortName;
     LPCWSTR         cngName;
-    pfnHash         msBignumHashFunc;
 } HASHALG_DATA;
 
 #define TEST_INTEROP_NUMOF_HASHALGS     (5)
@@ -41,7 +35,8 @@ extern HASHALG_DATA g_HashAlgs[TEST_INTEROP_NUMOF_HASHALGS];
 // Helper functions
 UINT32 testInteropImplToInd( AlgorithmImplementation * pImpl );
 
-VOID testInteropScToHashContext( PCSYMCRYPT_HASH pHashAlgorithm, PBYTE rgbDigest, hash_function_context* pHashFunCxt);
+VOID testInteropScToHashContext(PCSYMCRYPT_HASH pHashAlgorithm, PBYTE rgbDigest);
+
 
 LPCWSTR testInteropScToCngHash( PSYMCRYPT_HASH pHashAlgorithm );
 

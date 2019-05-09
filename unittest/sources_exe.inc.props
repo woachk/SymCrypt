@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TARGETTYPE Condition="'$(OVERRIDE_TARGETTYPE)'!='true'">PROGRAM</TARGETTYPE>
+    <MSC_WARNING_LEVEL Condition="'$(OVERRIDE_MSC_WARNING_LEVEL)'!='true'">/W4 /WX</MSC_WARNING_LEVEL>
+    <UMTYPE Condition="'$(OVERRIDE_UMTYPE)'!='true'">console</UMTYPE>
+    <LINK_TIME_CODE_GENERATION Condition="'$(OVERRIDE_LINK_TIME_CODE_GENERATION)'!='true'">1</LINK_TIME_CODE_GENERATION>
+    <INCLUDES Condition="'$(OVERRIDE_INCLUDES)'!='true'">..\inc;      ..\..\inc;      ..\lib;      $(OBJECT_ROOT)\SymCrypt\Publics\$(O);      $(DS_INC_PATH);                      $(DS_INC_PATH)\crypto;      $(ONECOREDS_INC_PATH)\crypto;      $(ONECOREDS_PRIVATE_INC_PATH_L)\crypto;      $(ONECOREDS_INTERNAL_INC_PATH_L)\crypto;      $(MINWIN_PRIV_SDK_INC_PATH)\crypto;      $(DDK_INC_PATH);</INCLUDES>
+    <SOURCES Condition="'$(OVERRIDE_SOURCES)'!='true'">main_exe.cpp      symcryptunittest.rc</SOURCES>
+    <UNICODE Condition="'$(OVERRIDE_UNICODE)'!='true'">1</UNICODE>
+<TARGETLIBS Condition="'$(OVERRIDE_TARGETLIBS)'!='true'">$(SDK_LIB_PATH)\ntdll.lib      $(SDK_LIB_PATH)\powrprof.lib      $(SDK_LIB_PATH)\bcrypt.lib      $(BUILD_ALT_DIR)\..\..\..\lib\$(O)symcrypt.lib      $(BUILD_ALT_DIR)\..\..\lib\$(O)symcryptunittest_lib.lib</TARGETLIBS>
+    <USE_MSVCRT Condition="'$(OVERRIDE_USE_MSVCRT)'!='true'">1</USE_MSVCRT>
+    <BUFFER_OVERFLOW_CHECKS Condition="'$(OVERRIDE_BUFFER_OVERFLOW_CHECKS)'!='true'">1</BUFFER_OVERFLOW_CHECKS>
+    <ENABLE_ISO_VOLATILE_WARNING Condition="'$(OVERRIDE_ENABLE_ISO_VOLATILE_WARNING)'!='true'">1</ENABLE_ISO_VOLATILE_WARNING>
+    <PRECOMPILED_INCLUDE Condition="'$(OVERRIDE_PRECOMPILED_INCLUDE)'!='true'">precomp.h</PRECOMPILED_INCLUDE>
+    <PRECOMPILED_CXX Condition="'$(OVERRIDE_PRECOMPILED_CXX)'!='true'">1</PRECOMPILED_CXX>
+    <USE_NATIVE_EH Condition="'$(OVERRIDE_USE_NATIVE_EH)'!='true'">1</USE_NATIVE_EH>
+    <MUI Condition="'$(OVERRIDE_MUI)'!='true'">0</MUI>
+    <MUI_COMMENT Condition="'$(OVERRIDE_MUI_COMMENT)'!='true'">Unittest only, this is never localized</MUI_COMMENT>
+    <TRACER_ENABLED Condition="'$(OVERRIDE_TRACER_ENABLED)'!='true'">0</TRACER_ENABLED>
+  </PropertyGroup>
+</Project>
