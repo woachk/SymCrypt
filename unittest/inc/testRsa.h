@@ -10,7 +10,7 @@
 
 #define TEST_RSA_MIN_NUMOF_BYTES        (64)    // Cng does not accept less than 512 bits (not even imported keys)
 #define TEST_RSA_MAX_NUMOF_BYTES        (256)
-#define TEST_RSA_NUMOF_IMPS             (1)     // SymCrypt, Cng
+#define TEST_RSA_NUMOF_IMPS             (2)     // SymCrypt, Cng
 #define TEST_RSA_MIN_NUMOF_PRIME_BITS   (64)    // Minimum size of bits for each prime
 
 typedef struct {

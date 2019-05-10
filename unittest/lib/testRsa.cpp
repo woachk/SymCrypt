@@ -730,9 +730,6 @@ testRsaCleanKeys()
 		{
 			SymCryptRsakeyFree((PSYMCRYPT_RSAKEY)g_KeyEntries[i].pKeys[0]);
 		}
-
-
-
 	}
 }
 
@@ -742,20 +739,20 @@ testRsaPopulateAlgorithms()
     // The order specifies the order of the from implementations
 
     addImplementationToList<FunctionalRsaImp<ImpSc, AlgRsaEncRaw>>(&g_AlgList);
-	
+	addImplementationToList<FunctionalRsaImp<ImpCng, AlgRsaEncRaw>>(&g_AlgList);
 
 
     addImplementationToList<FunctionalRsaImp<ImpSc, AlgRsaEncPkcs1>>(&g_AlgList);
-
+	addImplementationToList<FunctionalRsaImp<ImpCng, AlgRsaEncPkcs1>>(&g_AlgList);
 
     addImplementationToList<FunctionalRsaImp<ImpSc, AlgRsaEncOaep>>(&g_AlgList);
-
+	addImplementationToList<FunctionalRsaImp<ImpCng, AlgRsaEncOaep>>(&g_AlgList);
 
     addImplementationToList<FunctionalRsaImp<ImpSc, AlgRsaSignPkcs1>>(&g_AlgList);
-;
+	addImplementationToList<FunctionalRsaImp<ImpCng, AlgRsaSignPkcs1>>(&g_AlgList);
 
     addImplementationToList<FunctionalRsaImp<ImpSc, AlgRsaSignPss>>(&g_AlgList);
-
+	addImplementationToList<FunctionalRsaImp<ImpCng, AlgRsaSignPss>>(&g_AlgList);
 }
 
 VOID testRsaRunAlgs()
