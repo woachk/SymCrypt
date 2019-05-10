@@ -84,3 +84,4 @@ scbuild.log
 /lib/Debug/x86
 /unittest/exe_Win8_1nLater/Debug/x86
 /unittest/lib/Debug/x86
+/lib/Debug/ARM
